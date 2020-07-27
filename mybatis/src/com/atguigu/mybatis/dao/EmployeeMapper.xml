@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.dao.EmployeeMapper">
+    <select id="getEmployeeById" resultType="com.atguigu.mybatis.bean.Employee">
+select id,last_name lastName,gender,email from t_employee where id = #{id}
+
+</select>
+    <insert id="addEmp" parameterType="com.atguigu.mybatis.bean.Employee" useGeneratedKeys="true" keyProperty="id">
+        insert into t_employee(last_name,gender,email)values(#{lastName},#{gender},#{email})
+    </insert>
+    <update id="updateEmp">
+        update t_employee set last_name=#{lastName},gender=#{gender},email=#{email} where id=#{id}
+    </update>
+    <delete id="deleteEmpById">
+        delete from t_employee where id=#{id}
+    </delete>
+    <select id="getEmpByIdAndName" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from t_employee
+         <where>
+             <if test="id!=null and id!=''">
+                 id=#{id}
+             </if>
+             <if test="lastName!=null and lastName!=''">
+                 and lastlast_name like '%' #{lastName} '%'
+             </if>
+         </where>
+    </select>
+    <select id="getEmpByMap" resultType="com.atguigu.mybatis.bean.Employee">
+        select * from t_employee where id=#{id} and last_name=#{lastName}
+    </select>
+    <select id="getEmps" resultType="com.atguigu.mybatis.bean.Employee">
+        <include refid="sql1"></include> where id in <foreach collection="array" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+    <sql id="sql1">select * from t_employee</sql>
+    <select id="getEmpAndAddress" resultType="map">
+        select last_name lastName,address from t_employee e join t_address a on e.id_address=a.id
+    </select>
+</mapper>
